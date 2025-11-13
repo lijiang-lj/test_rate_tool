@@ -1,0 +1,275 @@
+(process-rate-env) PS C:\Users\IAJ2WX\OneDrive - Bosch Group\code\test_rate_tool> python test_process_rate_finder_tool.py
+✅ 已加载 .env 文件: C:\Users\IAJ2WX\OneDrive - Bosch Group\code\test_rate_tool\.env
+✅ 强制全局代理启用: http://iaj2wx:18660826712Lj@rb-proxy-unix-szh.bosch.com:8080
+[WARN] ⚠️ CSV 加载失败：[Errno 2] No such file or directory: 'C:\\Users\\IAJ2WX\\OneDrive - Bosch Group\\code\\test_rate_tool\\data\\process_rates.csv'
+
+################################################################################
+开始测试： Case 1：Trimming 工艺 - 按小时计费 (CNY/h)
+################################################################################
+
+================================================================================
+🚀 工艺成本查询 - 完全由 LLM 推理
+================================================================================
+📍 地区: Ningbo, Zhejiang
+🔧 工艺: Trimming
+🧱 材料: AlSi9Mn
+📐 表面积: 3110.0 cm²
+📊 体积: 195.6 cm³
+📦 年产量: 1,100,000 件
+💰 目标单位: CNY/h
+================================================================================
+
+
+[INFO] 📡 开始收集实时数据...
+🔍 Tavily 查询: China Ningbo, Zhejiang manufacturing labor cost per hour 2025 CNY
+🔍 Tavily 查询: China Ningbo, Zhejiang industrial electricity water natural gas price 2025
+🔍 Tavily 查询: Trimming process equipment cost depreciation manufacturing
+🔍 Tavily 查询: Trimming process energy consumption electricity water gas
+[INFO] ✅ 实时数据收集完成
+
+[INFO] 🧠 LLM 开始推理成本...
+[INFO] ✅ LLM 推理完成
+
+
+================================================================================
+Case 1：Trimming 工艺 - 按小时计费 (CNY/h)
+================================================================================
+▶ final_cost: 60.85 CNY/h
+▶ base_hourly_cost (CNY/h): 60.85
+▶ csv_baseline: {}
+
+🔍 full JSON:
+{
+  "query": {
+    "location": "Ningbo, Zhejiang",
+    "process_name": "Trimming",
+    "material_name": "AlSi9Mn",
+    "surface_area_cm2": 3110.0,
+    "volume_cm3": 195.6,
+    "annual_volume": 1100000,
+    "target_unit": "CNY/h"
+  },
+  "csv_baseline": {},
+  "llm_reasoning": {
+    "target_unit": "CNY/h",
+    "material_density_g_per_cm3": 2.68,
+    "calculated_weight_kg": 0.5242,
+    "processing_speed": {
+      "value": 229,
+      "unit": "pcs/h",
+      "reasoning": "Based on the stated annual output of 1,100,000 pcs and a typical two-shift schedule in coastal China (Zhejiang) of ~16 h/day × 300 days/year ≈ 4,800 h/year, the trimming cell throughput is estimated as 1,100,000 pcs / 4,800 h ≈ 229 pcs/h. This aligns with semi-automatic trimming press cycle times of ~15–20 s/pc for small/medium die castings."
+    },
+    "base_hourly_cost": {
+      "labor_CNY_per_hour": 53.6,
+      "energy_CNY_per_hour": 3.75,
+      "depreciation_CNY_per_hour": 3.5,
+      "total_CNY_per_hour": 60.85,
+      "reasoning": "Labor: Using HROne's cited National Bureau of Statistics figure for average annual wage for manufacturing workers of RMB 82,413 in 2023, and a typical 2,000 working hours/year, the base wage is ~82,413/2,000 ≈ 41.2 CNY/h. Zhejiang raised minimum wages in 2024 (China Briefing), and coastal manufacturing typically has employer social contributions/overheads of ~25–35%. Applying a 30% burden yields ~41.2 × 1.30 ≈ 53.6 CNY/h. This is consistent with coastal (Zhejiang/Ningbo) average manufacturing wages and above the local minimum (>2,000 CNY/month). Energy: Trimming presses are predominantly electric (hydraulic or servo), with negligible water/natural gas use. China Briefing notes regionally differentiated industrial electricity with TOU structures; in Zhejiang, a mid-voltage blended tariff of ~0.70–0.85 CNY/kWh is typical. A reasonable assumption of 0.75 CNY/kWh is used. A hydraulic trimming press commonly has a 7.5–15 kW motor; with duty cycles/load factors, average demand is ~4–6 kW. We assume 5 kW average, so energy cost ≈ 5 kWh/h × 0.75 CNY/kWh = 3.75 CNY/h. Natural gas CEIC data (3.03 CNY/m³ in Beijing) is not applied here, since trimming does not use gas. Depreciation: Assume a dedicated trimming press costs ~120,000 CNY with 10% salvage at end of life, 10-year life, operating ~4,800 h/year (matching the throughput assumption). Depreciable base = 120,000 × (1 − 0.10) = 108,000 CNY, total life hours ≈ 10 × 4,800 = 48,000 h, so depreciation ≈ 108,000/48,000 ≈ 2.25 CNY/h. Typical maintenance/spares for trimming presses (blades, seals, oil) ~ 5,000–7,000 CNY/year; we assume 6,000 CNY/year ⇒ 6,000/4,800 ≈ 1.25 CNY/h. Combined depreciation+maintenance ≈ 3.5 CNY/h."
+    },
+    "unit_conversion": {
+      "from_unit": "CNY/h",
+      "to_unit": "CNY/h",
+      "conversion_factor": 1.0,
+      "reasoning": "The requested target unit is CNY/h; therefore, no unit conversion is required for the final quote. For completeness, derived rates for CNY/cm³ and CNY/kg are calculated using the estimated throughput and material density as provided below."
+    },
+    "final_cost": 60.85,
+    "final_unit": "CNY/h",
+    "cost_breakdown": {
+      "labor": 53.6,
+      "energy": 3.75,
+      "depreciation": 3.5
+    },
+    "derived_rates": {
+      "CNY_per_cm3": 0.001359,
+      "CNY_per_kg": 0.507
+    },
+    "conversion_support": {
+      "cm3_per_h": 44792.4,
+      "kg_per_h": 120.0436,
+      "pcs_per_h": 229
+    },
+    "detailed_reasoning": "1) Extraction of reliable real-time data: Labor—HROne (2023) cites NBS: average annual wage for manufacturing workers RMB 82,413; China Briefing (2025) notes Zhejiang raised minimum wages in 2024 and many regions exceed 2,000 CNY/month. In Ningbo/Zhejiang, coastal manufacturing typically pays above minimum. Converting annual wage to hourly with typical 2,000 h/year yields ~41.2 CNY/h. Including employer social costs/overheads (social insurance, housing fund, paid leave, overtime premiums) typically 25–35% in coastal provinces, we conservatively use 30%, giving ~53.6 CNY/h. Energy—China Briefing (2025) emphasizes regional, market-driven industrial electricity with TOU. Zhejiang commonly falls ~0.70–0.85 CNY/kWh blended. We assume 0.75 CNY/kWh. Natural gas CEIC reports 3.03 CNY/m³ (Beijing) but trimming presses do not consume gas; water also negligible here. Equipment depreciation—no direct price provided; typical die-casting trimming presses (20–60 t hydraulic or servo) cost ~80,000–200,000 CNY. We choose 120,000 CNY with 10% salvage, 10-year life, running ~4,800 h/year (2 shifts × 300 days/year) matching our throughput assumption. 2) Cost model: labor + energy + depreciation (depreciation includes maintenance). Labor: 53.6 CNY/h. Energy: 5 kW average demand (hydraulic press motor 7.5–15 kW with ~30–40% load factor plus minor auxiliaries) × 0.75 CNY/kWh ≈ 3.75 CNY/h. Depreciation: (120,000 − 12,000)/48,000 ≈ 2.25 CNY/h plus maintenance ~1.25 CNY/h ⇒ 3.5 CNY/h. Total ≈ 60.85 CNY/h. 3) Throughput basis for unit conversions: Annual output is 1,100,000 pcs; with 4,800 h/year, throughput ≈ 229 pcs/h. Part volume = 195.6 cm³; thus cm³/h ≈ 229 × 195.6 ≈ 44,792.4 cm³/h. Material AlSi9Mn density for Al-Si-Mn die cast alloys ≈ 2.65–2.70 g/cm³; we use 2.68 g/cm³ based on metallurgical norms for Al-Si (~9% Si) systems. Part weight ≈ 195.6 × 2.68 ≈ 524.208 g ≈ 0.5242 kg; hence kg/h ≈ 0.5242 × 229 ≈ 120.0436 kg/h. 4) Derived billing modes: CNY/cm³ ≈ 60.85 / 44,792.4 ≈ 0.001359 CNY/cm³. CNY/kg ≈ 60.85 / 120.0436 ≈ 0.507 CNY/kg. 5) Assumptions and bounds: - Working hours/year: We use 4,800 h/year to be consistent with high-volume coastal manufacturing running two shifts; if actual hours differ (e.g., 4,000–5,500 h/year depending on shifts, maintenance, holidays), the pcs/h and derived cm³/kg rates adjust proportionally. - Electricity tariff: Without a published Ningbo-specific 2025 tariff in the provided data, 0.75 CNY/kWh is a reasonable mid-point for Zhejiang industrial blended rates; TOU participation can alter this by ±10–20%. - Press energy consumption: Lacking direct trimming energy data in the provided search results, we adopt a typical hydraulic press profile (7.5–15 kW installed, ~30–40% duty) yielding ~5 kW average. Actual servo presses may be more efficient (~3–4 kW average), while older hydraulics may be higher (~6–8 kW average). - Equipment cost/life: If the press cost is at the lower end (80k CNY) or higher end (200k CNY), the depreciation component would vary in ~1.5–5.8 CNY/h range under similar hours and maintenance assumptions. 6) Notes on geometry: The provided surface area (3,110 cm²) indicates a moderate part envelope; trimming time is typically driven by flash/gate/runner removal geometry and fixture complexity rather than pure area or volume. Our cycle-based throughput, inferred from annual volume and typical shifts, is consistent with semi-automated die-cast trimming operations."
+  },
+  "final_cost": 60.85,
+  "final_unit": "CNY/h",
+  "base_hourly_cost": 60.85
+}
+
+################################################################################
+开始测试： Case 2：KTL coating 工艺 - 按体积计费 (CNY/cm³)
+################################################################################
+
+================================================================================
+🚀 工艺成本查询 - 完全由 LLM 推理
+================================================================================
+📍 地区: Ningbo, Zhejiang
+🔧 工艺: KTL coating
+🧱 材料: AlSi9Mn
+📐 表面积: 3110.0 cm²
+📊 体积: 195.6 cm³
+📦 年产量: 1,100,000 件
+💰 目标单位: CNY/cm³
+================================================================================
+
+
+[INFO] 📡 开始收集实时数据...
+🔍 Tavily 查询: China Ningbo, Zhejiang manufacturing labor cost per hour 2025 CNY
+🔍 Tavily 查询: China Ningbo, Zhejiang industrial electricity water natural gas price 2025
+🔍 Tavily 查询: KTL coating process equipment cost depreciation manufacturing
+🔍 Tavily 查询: KTL coating process energy consumption electricity water gas
+[INFO] ✅ 实时数据收集完成
+
+[INFO] 🧠 LLM 开始推理成本...
+[INFO] ✅ LLM 推理完成
+
+
+================================================================================
+Case 2：KTL coating 工艺 - 按体积计费 (CNY/cm³)
+================================================================================
+▶ final_cost: 0.016257 CNY/cm³
+▶ base_hourly_cost (CNY/h): 564.163
+▶ csv_baseline: {}
+
+🔍 full JSON:
+{
+  "query": {
+    "location": "Ningbo, Zhejiang",
+    "process_name": "KTL coating",
+    "material_name": "AlSi9Mn",
+    "surface_area_cm2": 3110.0,
+    "volume_cm3": 195.6,
+    "annual_volume": 1100000,
+    "target_unit": "CNY/cm³"
+  },
+  "csv_baseline": {},
+  "llm_reasoning": {
+    "target_unit": "CNY/cm³",
+    "material_density_g_per_cm3": null,
+    "calculated_weight_kg": null,
+    "processing_speed": {
+      "value": 34703.226,
+      "unit": "cm³/h",
+      "reasoning": "Annual output 1,100,000 pcs/year. Assume a high-utilization KTL line typical for automotive suppliers: nominal 24 h/day, 6 days/week, 50 weeks/year = 7,200 h gross. Applying OEE ≈ 86% (maintenance, changeovers, bath control) gives ~6,200 h/year available. Thus throughput ≈ 1,100,000 / 6,200 = 177.42 pcs/h. Each part volume is 195.6 cm³, so volume rate = 177.42 pcs/h × 195.6 cm³/pc = 34,703.226 cm³/h. (We also use surface rate later: 3110 cm²/pc = 0.311 m²/pc, so 0.311 × 177.42 ≈ 55.177 m²/h.)"
+    },
+    "base_hourly_cost": {
+      "labor_CNY_per_hour": 171.875,
+      "energy_CNY_per_hour": 150.352,
+      "depreciation_CNY_per_hour": 241.935,
+      "total_CNY_per_hour": 564.163,
+      "reasoning": "Labor: Public data points indicate 2023-2025 China manufacturing wages around 82,413 CNY/yr (HRone, 2023 national manufacturing) to ~103,932 CNY/yr (Chinafy generic). Ningbo/Zhejiang is above national average; another local reference shows Ningbo 2023 avg salary 133,967 CNY (state/public sector, Kinyu). For 2025 we assume a loaded manufacturing operator cost of 110,000 CNY/yr base with ~30% employer on-costs (social insurance, housing fund), yielding 143,000 CNY/yr. Assuming 2,080 paid hours/year ≈ 68.75 CNY/h per operator. A medium, automated KTL line typically runs with ~2 operators + 0.5 FTE equivalent for QC/maintenance/material handling across the shift, yielding 2.5 FTE × 68.75 ≈ 171.875 CNY/h. Energy: • Electricity tariff: China Briefing (2025) notes regionally differentiated, market-driven industrial power rates with TOU; for Zhejiang mid-voltage blended average we assume 0.78 CNY/kWh (typical 0.70–0.85 CNY/kWh range). • Natural gas: CEIC shows industrial NG at 3.03 CNY/m³ (Beijing, Mar-2025). Zhejiang east-coast industrial is typically ~3.0–3.5 CNY/m³; assume 3.2 CNY/m³. • Water+WW: Industrial water and wastewater in Ningbo commonly around 5–8 CNY/m³ depending on meter and discharge; assume 6 CNY/m³. KTL energy intensities (from industry practice and OEM brochures such as Indufinish and AABO-IDEAL e-coat lines, plus standard curing practice): (a) Electrodeposition electrical energy ≈ 0.25–0.35 kWh/m² at 18–25 µm; we use 0.30 kWh/m². (b) Circulation/filtration/conveyor base load ≈ 20–30 kW; we use 25 kW. (c) Bake oven (160–180°C) gas ≈ 0.5–0.7 m³/m² depending on load, insulation, air-leakage; we use 0.6 m³/m². (d) Rinse/UF make-up water as a fixed flow; assume ~2.0 m³/h. With surface rate 55.177 m²/h: deposition electricity 0.30×55.177=16.553 kWh/h; plus base load 25 kW → total electric ≈ 41.553 kWh/h; at 0.78 CNY/kWh → 32.412 CNY/h. Gas: 0.6×55.177=33.106 m³/h; at 3.2 CNY/m³ → 105.941 CNY/h. Water: 2.0 m³/h × 6 CNY/m³ = 12.000 CNY/h. Energy total ≈ 32.412 + 105.941 + 12.000 = 150.352 CNY/h. Depreciation: For a mid-size KTL line (pretreatment, e-coat tanks, UF, rectifier, oven, conveyors, DI water system) CAPEX ≈ 10–20 million CNY; we assume 15 million CNY. Straight-line over 10 years → 1.5 million CNY/yr. With ~6,200 h/yr → 1,500,000/6,200 ≈ 241.935 CNY/h. Sum: 171.875 + 150.352 + 241.935 ≈ 564.163 CNY/h."
+    },
+    "unit_conversion": {
+      "from_unit": "CNY/h",
+      "to_unit": "CNY/cm³",
+      "conversion_factor": 2.8796e-05,
+      "reasoning": "Cost per cm³ = (CNY/h) / (cm³/h). Processing speed is 34,703.226 cm³/h, so the conversion factor is 1 / 34,703.226 ≈ 0.000028796 h/cm³. Unit conversion: 564.163 CNY/h × 0.000028796 h/cm³ = 0.0162568 CNY/cm³."
+    },
+    "final_cost": 0.016257,
+    "final_unit": "CNY/cm³",
+    "cost_breakdown": {
+      "labor": 0.004953,
+      "energy": 0.004333,
+      "depreciation": 0.006971
+    },
+    "detailed_reasoning": "1) Real-time data extraction and reliability: • Labor: Public sources show China manufacturing wages ~82,413 CNY/yr (HRone, 2023) and another generic figure of ~103,932 CNY/yr (Chinafy). Ningbo’s 2023 average salary 133,967 CNY (Kinyu) indicates higher-than-average wage levels. Zhejiang raised minimum wages in 2024 (China Briefing, 2025). Given Ningbo’s industrial base and 2025 timing, using 110,000 CNY/yr as a base and +30% employer burden is conservative but reasonable. • Electricity: China Briefing (2025) stresses regional, TOU, and voltage-level variability; typical blended industrial tariffs for Zhejiang mid/hi-voltage customers cluster around 0.70–0.85 CNY/kWh. We use 0.78 CNY/kWh. • Natural gas: CEIC reports 3.03 CNY/m³ for Beijing industrial NG (Mar-2025). East-coast industrial city rates are similar to slightly higher; we assume 3.2 CNY/m³ for Zhejiang. • Water: Industrial water + wastewater charges commonly ~5–8 CNY/m³ in coastal cities; we assume 6 CNY/m³ as a blended cost. • KTL energy intensity: Vendor and industry references (Indufinish; AABO-IDEAL E-coat brochure) describe KTL as water-based electrophoretic deposition followed by thermal cure. Typical deposition energy 0.25–0.35 kWh/m² for ~20 µm film is widely cited in practice. Bake ovens at 160–180°C with residence time ~20 min often consume ~0.5–0.7 m³ NG/m² of coated area depending on line design and load. Water consumption is governed by cascade rinses and UF/DI makeup; a small constant base flow (here 2.0 m³/h) is typical for a line of this capacity. These choices are within standard ranges for automotive supplier-scale KTL lines. • Depreciation: Industry CAPEX for a mid-size automated KTL line, including pretreatment, tanks, UF, rectifier, oven, conveyors, and utilities is typically 10–20 million CNY depending on size and options. We assume 15 million CNY with 10-year straight-line depreciation. 2) Cost model (labor, energy, depreciation): • Labor: Loaded hourly cost per operator = (110,000 CNY/yr × 1.30) / 2,080 h/yr = 68.75 CNY/h. Staffing = 2.5 FTE per hour → 171.875 CNY/h. • Energy: Surface throughput = 0.311 m²/pc × 177.42 pc/h = 55.177 m²/h. – Electrodeposition electricity = 0.30 kWh/m² × 55.177 = 16.553 kWh/h. – Pumps/filtration/conveyors base ≈ 25 kW. – Total electricity ≈ 41.553 kWh/h × 0.78 CNY/kWh = 32.412 CNY/h. – Oven gas ≈ 0.6 m³/m² × 55.177 = 33.106 m³/h × 3.2 CNY/m³ = 105.941 CNY/h. – Water ≈ 2.0 m³/h × 6 CNY/m³ = 12.000 CNY/h. – Energy total ≈ 150.352 CNY/h. • Depreciation: 15,000,000 CNY / (10 yr × 6,200 h/yr) = 241.935 CNY/h. • Total hourly = 171.875 + 150.352 + 241.935 ≈ 564.163 CNY/h. 3) Conversion to CNY/cm³: • Processing speed = 34,703.226 cm³/h. • Conversion factor = 1 / 34,703.226 = 0.000028796 h/cm³. • Cost per cm³ = 564.163 × 0.000028796 ≈ 0.0162568 CNY/cm³. Component-wise per cm³: labor 171.875 / 34,703.226 ≈ 0.004953; energy 150.352 / 34,703.226 ≈ 0.004333; depreciation 241.935 / 34,703.226 ≈ 0.006971. 4) Assumptions and notes: • The model excludes coating materials/chemicals (KTL paint replenishment, pretreatment chemicals), QA scrap, rejects, and general factory overhead, because the task requested only labor, energy, and equipment depreciation. Actual quoted KTL prices typically include materials and overhead. • Electricity and gas prices are volatile and TOU-dependent; if the line can shift load to off-peak or secure direct power purchase, electricity cost may be lower. • Energy intensities are sensitive to oven loading and insulation; better heat recovery or tighter controls could reduce gas consumption from 0.6 to ~0.5 m³/m², lowering energy ~9–10%. • Throughput scales the per-cm³ cost strongly via depreciation and base energy loads; higher uptime (e.g., 6,800–7,000 h/yr) would reduce CNY/cm³. 5) Sources referenced (from provided real-time snippets): • Labor: HRone (avg manufacturing wage 2023: 82,413 CNY/yr); Chinafy (avg manufacturing wages ~103,932 CNY); Kinyu (Ningbo 2023 avg salary 133,967 CNY). • Wages/minimums dynamics: China Briefing (2025): provinces including Zhejiang raised minimum wages in 2024. • Electricity pricing framework: China Briefing (2025) industrial power rates guide (TOU, market-based). • Natural gas: CEIC (industrial NG Beijing 3.03 CNY/m³, Mar-2025). • KTL process notes: Indufinish; AABO-IDEAL e-coat brochure (2025); APPCZ—confirming water-based electrophoretic deposition and bake cure. Where numeric values were not explicitly provided in the snippets, bounded assumptions were made based on common industry practice for KTL lines in East China and are indicated with ranges above."
+  },
+  "final_cost": 0.016257,
+  "final_unit": "CNY/cm³",
+  "base_hourly_cost": 564.163
+}
+
+################################################################################
+开始测试： Case 3：Melting 工艺 - 按重量计费 (CNY/kg)
+################################################################################
+
+================================================================================
+🚀 工艺成本查询 - 完全由 LLM 推理
+================================================================================
+📍 地区: Ningbo, Zhejiang
+🔧 工艺: Melting
+🧱 材料: AlSi9Mn
+📐 表面积: 3110.0 cm²
+📊 体积: 195.6 cm³
+🧱 材料: AlSi9Mn
+📐 表面积: 3110.0 cm²
+📊 体积: 195.6 cm³
+📐 表面积: 3110.0 cm²
+📊 体积: 195.6 cm³
+📦 年产量: 1,100,000 件
+💰 目标单位: CNY/kg
+================================================================================
+
+💰 目标单位: CNY/kg
+================================================================================
+
+
+[INFO] 📡 开始收集实时数据...
+
+[INFO] 📡 开始收集实时数据...
+🔍 Tavily 查询: China Ningbo, Zhejiang manufacturing labor cost per hour 2025 CNY
+🔍 Tavily 查询: China Ningbo, Zhejiang industrial electricity water natural gas price 2025
+🔍 Tavily 查询: China Ningbo, Zhejiang manufacturing labor cost per hour 2025 CNY
+🔍 Tavily 查询: China Ningbo, Zhejiang industrial electricity water natural gas price 2025
+🔍 Tavily 查询: China Ningbo, Zhejiang industrial electricity water natural gas price 2025
+🔍 Tavily 查询: Melting process equipment cost depreciation manufacturing
+🔍 Tavily 查询: Melting process energy consumption electricity water gas
+[INFO] ✅ 实时数据收集完成
+
+[INFO] 🧠 LLM 开始推理成本...
+[INFO] ✅ LLM 推理完成
+
+
+================================================================================
+Case 3：Melting 工艺 - 按重量计费 (CNY/kg)
+================================================================================
+▶ final_cost: 1.873 CNY/kg
+▶ base_hourly_cost (CNY/h): 136.49
+▶ csv_baseline: {}
+
+🔍 full JSON:
+{
+  "query": {
+    "location": "Ningbo, Zhejiang",
+    "process_name": "Melting",
+    "material_name": "AlSi9Mn",
+    "surface_area_cm2": 3110.0,
+    "volume_cm3": 195.6,
+    "annual_volume": 1100000,
+    "target_unit": "CNY/kg"
+  },
+  "csv_baseline": {},
+  "llm_reasoning": {
+    "target_unit": "CNY/kg",
+    "material_density_g_per_cm3": 2.68,
+    "calculated_weight_kg": 0.524,
+    "processing_speed": {
+      "value": 72.88,
+      "unit": "kg/h",
+      "reasoning": "Annual output is 1,100,000 pcs. Assume continuous melting operations 24 h/day, 330 days/year (typical for foundry furnaces), giving 7920 operating hours/year. Throughput in pcs/h = 1,100,000 / 7920 ≈ 138.89 pcs/h. Each piece volume is 195.6 cm³; estimated AlSi9Mn density ≈ 2.68 g/cm³ (typical Al-Si-Mn alloy), so mass per piece = 195.6 × 2.68 = 524.2 g ≈ 0.524 kg. Therefore, mass flow ≈ 138.89 × 0.524 ≈ 72.88 kg/h."
+    },
+    "base_hourly_cost": {
+      "labor_CNY_per_hour": 94.5,
+      "energy_CNY_per_hour": 24.94,
+      "depreciation_CNY_per_hour": 17.05,
+      "total_CNY_per_hour": 136.49,
+      "reasoning": "Labor: The National Bureau of Statistics (via the cited article 'Is Labour Cost In China Rising? Unveiling The Surprising Reality') reports average annual wage for manufacturing workers in China at RMB 82,413 in 2023. Converting to hourly: 82,413 / ~2080 h ≈ 39.6 CNY/h base. Fully burdened rate including social insurance/benefits/overheads commonly runs 1.5–1.8× of base; we assume 1.6× → ~63 CNY/h per operator. Typical aluminum melting line staffing is ~1.5 operators equivalent per furnace-hour (two operators shared across tasks and supervision), so labor/h ≈ 63 × 1.5 = 94.5 CNY/h. Energy: Pricing references—industrial power rates in China are regionally/TOU differentiated (China Briefing 2025), typical mid-voltage blended rates in East China are ~0.65–0.85 CNY/kWh; we assume 0.75 CNY/kWh for Ningbo (assumption within typical range). Industrial natural gas price proxy from CEIC shows Beijing at 3.03 CNY/m³ (Mar 2025); Zhejiang typically similar 2.5–3.5, we assume 3.00 CNY/m³. For aluminum melting, theoretical energy per kg is ~1.0 MJ/kg (0.28 kWh/kg) based on cp ~0.9 kJ/kg·K, ΔT ≈ 675 K to ~700°C + latent heat ~397 kJ/kg; actual furnace efficiency yields higher real consumption. We assume a common configuration: bulk melting on gas-fired reverberatory (45% thermal efficiency), holding/refining on electric (0.2 kWh/kg). Gas consumption per kg ≈ (1.0 MJ/kg / 0.45) / 35 MJ/m³ ≈ 0.064 m³/kg. At 72.88 kg/h: gas cost/h = 72.88 × 0.064 × 3.00 ≈ 14.01 CNY/h; electricity cost/h = 72.88 × 0.2 × 0.75 ≈ 10.93 CNY/h; total energy/h ≈ 24.94 CNY/h. Depreciation: Furnace system (one gas reverberatory + one electric holding furnace + auxiliaries) typical capex ~1.5 million CNY. Assume 10-year useful life, 10% salvage → depreciable base 1.35 million CNY. Using straight-line over operating hours (unit-of-production style per Investopedia; also general equipment depreciation references), with 7920 h/year: depreciation per hour ≈ 1,350,000 / (10 × 7920) ≈ 17.05 CNY/h. Total hourly cost = 94.5 + 24.94 + 17.05 ≈ 136.49 CNY/h."
+    },
+    "unit_conversion": {
+      "from_unit": "CNY/h",
+      "to_unit": "CNY/kg",
+      "conversion_factor": 72.88,
+      "reasoning": "We convert hourly cost to per kg by dividing by the mass throughput rate (kg/h). Mass throughput was derived from annual pcs (1,100,000), assumed operating hours (7920 h/year), piece volume (195.6 cm³), and alloy density (2.68 g/cm³), yielding 72.88 kg/h. Therefore, CNY/kg = (CNY/h) / 72.88."
+    },
+    "final_cost": 1.873,
+    "final_unit": "CNY/kg",
+    "cost_breakdown": {
+      "labor": 1.296,
+      "energy": 0.342,
+      "depreciation": 0.234
+    },
+    "detailed_reasoning": "Data extraction and assumptions: (1) Labor costs: The cited NBS-based article ('Is Labour Cost In China Rising? Unveiling The Surprising Reality') states China’s average annual wage for manufacturing workers reached RMB 82,413 in 2023. Converting to an hourly base using ~2080 hours/year yields ~39.6 CNY/h. To reflect fully-burdened cost (social insurance, overtime premiums, management overhead), a factor of 1.5–1.8× is typical in China; we use 1.6× (assumption within a reasonable range for East China coastal regions). Ningbo’s broader average salary reference (133,967 CNY for state-owned/local government, Kinyu) suggests local wages in Ningbo are above national averages; using the national manufacturing wage with a burden factor is conservative. We also note the China Briefing minimum wage guide indicates Zhejiang has raised minimum wages above 2,000 CNY/month, supporting that our assumed effective hourly is above minimum. Staffing for aluminum melting commonly requires 1–2 operators per furnace line. We choose 1.5 operators per hour for the melting/holding line to cover charge/skim/flux/additions, tapping, and safety monitoring. (2) Energy prices: China Briefing 2025 states industrial electricity pricing is market-driven, TOU and region-dependent; typical blended rates in East China for medium voltage users are often in the 0.65–0.85 CNY/kWh range. We use 0.75 CNY/kWh—an assumption reflecting a reasonable blended average for Ningbo considering TOU. For natural gas, CEIC reports 3.03 CNY/m³ for industry in Beijing (Mar 2025). Zhejiang prices are generally close; we use 3.00 CNY/m³ as a regionally reasonable proxy (assumption). (3) Energy consumption: Theoretical energy to melt aluminum is derived from metallurgical properties: cp ≈ 0.9 kJ/kg·K, ΔT from ~25°C to ~700°C is ~675 K, sensible heat ≈ 0.9×675 ≈ 607.5 kJ/kg; latent heat ≈ 397 kJ/kg; total ≈ 1005 kJ/kg ≈ 1.005 MJ/kg ≈ 0.279 kWh/kg. Actual furnace energy is higher due to losses; typical efficient electric induction or holding furnaces for aluminum can be ~0.1–0.3 kWh/kg, while gas-fired reverberatories often require additional fuel due to lower thermal efficiency. We assume a common practice: gas-fired bulk melting (45% efficiency) plus electric holding/refining at 0.2 kWh/kg. Gas consumption per kg = (1.0 MJ/kg / 0.45) / 35 MJ/m³ ≈ 0.064 m³/kg (using LHV of ~35 MJ/m³ for natural gas). Electricity consumption per kg assumed 0.2 kWh/kg. These are not from a single numeric citation in the provided links but are grounded in thermodynamic calculations and industry-efficient furnace ranges; the melting efficiency PDF and the EAF article indicate electricity is a major fraction of energy in melting processes, but specific aluminum figures depend on furnace type and efficiency. (4) Processing speed: Given the production plan (1.1 million pcs/year) and continuous operations assumption (330 days × 24 h = 7920 h/year), pcs/h ≈ 138.89. With piece volume 195.6 cm³ and AlSi9Mn density ~2.68 g/cm³ (typical density range for Al-Si casting alloys is ~2.65–2.73 g/cm³), each part weighs ≈ 195.6 × 2.68 = 524.2 g ≈ 0.524 kg. Thus, throughput ≈ 138.89 × 0.524 ≈ 72.88 kg/h. (5) Cost model: Labor = 63 CNY/h/operator × 1.5 = 94.5 CNY/h. Energy = gas: 72.88 kg/h × 0.064 m³/kg × 3.00 CNY/m³ ≈ 14.01 CNY/h; electricity: 72.88 kg/h × 0.2 kWh/kg × 0.75 CNY/kWh ≈ 10.93 CNY/h; total energy ≈ 24.94 CNY/h. Depreciation: Capex 1.5 million CNY, 10% salvage, life 10 years, hours/year 7920 → per hour ≈ (1,350,000) / (10 × 7920) ≈ 17.05 CNY/h (using straight-line/units-of-production rationale per Investopedia and general manufacturing depreciation guidance). Total hourly cost ≈ 136.49 CNY/h. (6) Unit conversion: CNY/kg = (CNY/h) / (kg/h) = 136.49 / 72.88 ≈ 1.873 CNY/kg. Per-kg breakdown: labor ≈ 94.5 / 72.88 ≈ 1.296 CNY/kg; energy ≈ 24.94 / 72.88 ≈ 0.342 CNY/kg; depreciation ≈ 17.05 / 72.88 ≈ 0.234 CNY/kg. Notes and uncertainty: Electricity contracts (TOU, peak/off-peak), gas tariff tiers, furnace efficiency (lining condition, flue losses), scrap charge mix, and flux/cover usage can shift energy intensity by ±10–30%. Our assumptions target a modern, reasonably maintained line. If operations are not 24/7 (e.g., 2 shifts), pcs/h would be higher to meet annual volume, increasing kg/h and slightly reducing CNY/kg (fixed components per hour diluted). Conversely, lower operating hours or poorer furnace efficiency increases CNY/kg. The methodology aligns with metallurgical energy calculations and typical Chinese industrial pricing structures."
+  },
+  "final_cost": 1.873,
+  "final_unit": "CNY/kg",
+  "base_hourly_cost": 136.49
+}

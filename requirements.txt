@@ -1,0 +1,30 @@
+# === 核心依赖 ===
+pandas==2.3.2
+pydantic==2.11.7
+python-dotenv==1.1.1
+
+# === LangChain 相关 ===
+langchain-core==0.3.79
+langchain-openai==0.3.35
+langchain-tavily==0.2.12
+langchain==0.3.20  # Agent 功能需要
+
+# === OpenAI & Tavily ===
+openai==1.104.2
+tavily-python==0.7.12
+
+# === 可选：开发工具 ===
+# pytest==7.4.0  # 测试框架
+# black==23.7.0  # 代码格式化
+# mypy==1.5.0    # 类型检查
+
+# === 说明 ===
+# 1. 如果在公司代理环境，使用:
+#    pip install -r requirements.txt --proxy http://user:password@proxy:8080
+#
+# 2. 如果需要更新所有包到最新版:
+#    pip install -r requirements.txt --upgrade
+#
+# 3. 如果遇到版本冲突，可以移除版本号让 pip 自动解决:
+#    pip install pandas pydantic langchain-openai ...
+
