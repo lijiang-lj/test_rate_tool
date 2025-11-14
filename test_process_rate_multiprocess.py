@@ -101,14 +101,14 @@ def main():
         #         **common_kwargs,
         #     ),
         # },
-        # {
-        #     "title": "Case 3：Machining OP10 工艺 - 按小时计费 (CNY/h)",
-        #     "kwargs": dict(
-        #         process_name="Machining OP10",
-        #         unit="CNY/h",
-        #         **common_kwargs,
-        #     ),
-        # },
+        {
+            "title": "Case 3：Machining OP10 工艺 - 按小时计费 (CNY/h)",
+            "kwargs": dict(
+                process_name="Machining OP10",
+                unit="CNY/h",
+                **common_kwargs,
+            ),
+        },
         # {
         #     "title": "Case 4：Machining OP20 工艺 - 按小时计费 (CNY/h)",
         #     "kwargs": dict(
@@ -118,10 +118,10 @@ def main():
         #     ),
         # },
         {
-            "title": "Case 5：KTL coating 工艺 - 按体积计费 (CNY/cm)",
+            "title": "Case 5：KTL coating 工艺 - 按体积计费 (CNY/cm²)",
             "kwargs": dict(
                 process_name=" KTL coating",
-                unit="CNY/cm³",
+                unit="CNY/cm²",
                 **common_kwargs,
             ),
         },
