@@ -19,8 +19,12 @@
 - [许可协议](#许可协议)  
 
 ## 安装与环境配置
-1. 克隆仓库  
-2. 创建并编辑 `.env`，参考：  
+1. 克隆仓库
+2. 激活已创建的 Conda 环境
+```bash
+conda activate test1
+```
+3. 创建并编辑 `.env`，参考：
 ```env
 AZURE_OPENAI_DEPLOYMENT=your-deployment-name
 AZURE_OPENAI_API_KEY=your-api-key
@@ -28,8 +32,8 @@ AZURE_OPENAI_ENDPOINT=https://your-endpoint.openai.azure.com/
 AZURE_OPENAI_API_VERSION=2024-02-15-preview
 TAVILY_API_KEY=your-tavily-key
 PROXY_URL=http://user:password@proxy.company.com:8080
-```  
-3. 安装依赖：  
+```
+4. 安装依赖：
 ```bash
 pip install -r requirements.txt
 ```
