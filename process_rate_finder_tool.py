@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-process_rate_finder_tool.py — v2.2（单位逻辑不硬编码版本）
+process_rate_finder_tool.py — v2.3（加入 KTL / Casting 提示词增强版，仍然不硬编码计算公式）
 功能：通过 Tavily 查询实时价格，由 Azure OpenAI 的 LLM 自动推理工艺成本。
 特点：
 - 内部统一用 CNY/h 做“基准成本维度”
 - 目标单位 unit 完全由调用方传入，不在代码里硬编码任何枚举或 if-else
 - 单位转换全部交给 LLM 在 prompt 里基于专业知识推理
+- 对 KTL coating / Casting 仅在提示词层给出“拆分结构”和“给出网址”的要求，不写死任何数值
 """
 
 import os
@@ -231,7 +232,50 @@ class ProcessRateFinderTool:
    - depreciation_CNY_per_hour
    - total_CNY_per_hour
 
-2. 然后根据 {target_unit} 的含义，设计一个合理的单位转换逻辑，例如：
+2. 如果工艺名称包含 "KTL"（例如 "KTL coating"），请参考典型 KTL 产线在实际商务 Workshop 中的拆分结构来构建成本模型（但不要照搬任何具体项目的数值，只学习结构和思路），可包括但不限于：
+   - 管理与间接人工：
+     - 如 workshop manager、shift leader、assistant、quality controller 等。
+     - 用“人数 × RMB/小时 × 小时/天 / 产量（housing/天）”的方式先折算到单件，再统一折算到 CNY/h。
+   - 直接操作工人工：
+     - 根据操作工人数、工资水平（RMB/小时）、每天工作小时数和产量，计算每件人工成本，并统一到 CNY/h。
+   - 设备折旧（KTL 线投资）：
+     - 基于整条 KTL 线的投资金额，采用长期折旧思路（例如按 10 年、每年工作天数、每天工作小时数等逻辑）；
+     - 不把折旧只摊在单一客户项目上，而是考虑多项目、多年的综合利用。
+   - 厂房/空间成本：
+     - 参考“面积 m² × RMB/m² / 月或天 / 产量”这种结构；
+     - 注意如果只部分时间给某个客户生产，应按实际利用时间分摊，而不是 100% 全部摊给该客户。
+   - 能源成本：
+     - 以总功率 kW、利用率（0~1）、每日运行小时数以及当地电价（RMB/kWh）为基础；
+     - 必要时可补充压缩空气、天然气、水处理等能耗成本。
+   - 维护与治具成本：
+     - 如 racks、plastic caps、passivation line、water treatment 等；
+     - 以“每月/每天维护或更换费用 / 产量”的结构折算到每件，再统一折算到 CNY/h。
+   - 质量检测与实验成本：
+     - 如盐雾试验、清洁测试、水测试、拉拔测试等；
+     - 将年度或每日测试费用按频次和产量分摊到单件，再统一到 CNY/h。
+   - 其他间接费用 / RMOC / Overhead：
+     - 在“直接成本小计”基础上施加合理的百分比（例如管理附加、风险附加等），
+     - 但必须在 reasoning 中写清楚采用的百分比区间与依据，仅作为假设。
+   - Scrap 报废成本：
+     - 采用合理的 Scrap Rate（%）区间；
+     - 将 Scrap 视为“合格件成本 × Scrap Rate”的附加成本。
+   在 detailed_reasoning 中，请像商务 Workshop 一样，清晰列出各项假设（人数、工时、功率、面积、Scrap 率等）和每一项的计算逻辑，最终仍需汇总为 CNY/h 维度的 base_hourly_cost。
+
+3. 如果工艺与高压压铸 / Die casting / HPDC 相关（例如 process_name 包含 "Casting"），请在设备折旧部分显式考虑压铸机投资，并遵守以下要求：
+   - 你可以通过实时数据搜索，获取类似“1250t Toshiba die casting machine / 东芝 1250t 压铸机”的市场公开报价或投资金额，用于估算折旧成本。
+   - 当你在推理中实际采用了某个公开网页上的设备价格（尤其是 1250t 东芝压铸机的价格）时：
+     - 必须在 detailed_reasoning 或 base_hourly_cost.reasoning 文本中，写出你引用该价格的公开网页 URL，
+       例如增加一行 `"source_url": "https://......"` 或 类似 “设备价格参考来源：https://......” 的说明。
+     - URL 必须是真实可访问的网页地址，而不是随意编造的字符串。
+     - 同时注明“该价格仅为公开市场参考价，用于折旧估算，并非合同价或最终报价”。
+   - 如果在线搜索没有获得可靠或明确的设备报价网页：
+     - 请在 detailed_reasoning 中明确写出“未找到可靠的 1250t 东芝压铸机公开报价 URL”的情况；
+     - 根据同吨位压铸机的一般价格区间或行业常识，给出一个合理的假设投资金额；
+     - 解释你假设的依据（例如行业报告、类似机型价格区间），但不要伪造 URL。
+   - 压铸机折旧思路仍应采用长期折旧 + 产能分摊（例如按年工作小时数、利用率、小时产能等），
+     避免把设备投资只摊在单一项目的总量上。
+
+4. 完成上述工艺成本建模（包括 KTL 或 Casting 等特殊要求，如果适用）后，再根据 {target_unit} 的含义，设计一个合理的单位转换逻辑，例如：
    - 如果 {target_unit} 是 "CNY/cm³"：
      - 说明你如何估算单位时间内可加工体积（cm³/h），并将 CNY/h 换算为 CNY/cm³。
    - 如果 {target_unit} 是 "CNY/kg"：
@@ -241,9 +285,9 @@ class ProcessRateFinderTool:
    - 如果 {target_unit} 是其它自定义单位（例如货币不同、包含多个物理量）：
      - 在 reasoning 中清楚解释你是如何从 CNY/h 映射到该单位的，并确保逻辑自洽。
 
-3. 如果缺少某项数据，可以根据中国或全球制造业的典型区间给出一个合理区间，并在 reasoning 中明确标注为“假设”。
+5. 如果缺少某项数据，可以根据中国或全球制造业的典型区间给出一个合理区间，并在 reasoning 中明确标注为“假设”。
 
-4. 最终输出必须是 **纯 JSON**，不能包含任何 markdown 语法或 ```json 包裹。
+6. 最终输出必须是 **纯 JSON**，不能包含任何 markdown 语法或 ```json 包裹。
 
 -------------------------
 【输出 JSON 模板（示例结构）】
@@ -307,6 +351,7 @@ class ProcessRateFinderTool:
             )
 
             content = response.content.strip()
+            # 防止 LLM 用 ```json 包裹
             content = re.sub(r"```json\s*", "", content)
             content = re.sub(r"```\s*", "", content)
             content = content.strip()

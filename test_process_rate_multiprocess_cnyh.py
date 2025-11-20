@@ -117,14 +117,14 @@ def main():
         #         **common_kwargs,
         #     ),
         # },
-        # {
-        #     "title": "Case 5：KTL coating 工艺 - 统一单位 (CNY/h)",
-        #     "kwargs": dict(
-        #         process_name="KTL coating",
-        #         unit="CNY/h",
-        #         **common_kwargs,
-        #     ),
-        # },
+        {
+            "title": "Case 5：KTL coating 工艺 - 统一单位 (CNY/h)",
+            "kwargs": dict(
+                process_name="KTL coating",
+                unit="CNY/h",
+                **common_kwargs,
+            ),
+        },
         # {
         #     "title": "Case 6：Machining OP30 工艺 - 统一单位 (CNY/h)",
         #     "kwargs": dict(
