@@ -85,14 +85,14 @@ def main():
 
     # 6 个待测工序（统一单位 CNY/h）
     test_cases = [
-        {
-            "title": "Case 1：Melting 工艺 - 统一单位 (CNY/h)",
-            "kwargs": dict(
-                process_name="Melting",
-                unit="CNY/h",
-                **common_kwargs,
-            ),
-        },
+        # {
+        #     "title": "Case 1：Melting 工艺 - 统一单位 (CNY/h)",
+        #     "kwargs": dict(
+        #         process_name="Melting",
+        #         unit="CNY/h",
+        #         **common_kwargs,
+        #     ),
+        # },
         {
             "title": "Case 2：Casting 工艺 - 统一单位 (CNY/h)",
             "kwargs": dict(
@@ -101,38 +101,38 @@ def main():
                 **common_kwargs,
             ),
         },
-        {
-            "title": "Case 3：Machining OP10 工艺 - 统一单位 (CNY/h)",
-            "kwargs": dict(
-                process_name="Machining OP10",
-                unit="CNY/h",
-                **common_kwargs,
-            ),
-        },
-        {
-            "title": "Case 4：Machining OP20 工艺 - 统一单位 (CNY/h)",
-            "kwargs": dict(
-                process_name="Machining OP20",
-                unit="CNY/h",
-                **common_kwargs,
-            ),
-        },
-        {
-            "title": "Case 5：KTL coating 工艺 - 统一单位 (CNY/h)",
-            "kwargs": dict(
-                process_name="KTL coating",
-                unit="CNY/h",
-                **common_kwargs,
-            ),
-        },
-        {
-            "title": "Case 6：Machining OP30 工艺 - 统一单位 (CNY/h)",
-            "kwargs": dict(
-                process_name="Machining OP30",
-                unit="CNY/h",
-                **common_kwargs,
-            ),
-        },
+        # {
+        #     "title": "Case 3：Machining OP10 工艺 - 统一单位 (CNY/h)",
+        #     "kwargs": dict(
+        #         process_name="Machining OP10",
+        #         unit="CNY/h",
+        #         **common_kwargs,
+        #     ),
+        # },
+        # {
+        #     "title": "Case 4：Machining OP20 工艺 - 统一单位 (CNY/h)",
+        #     "kwargs": dict(
+        #         process_name="Machining OP20",
+        #         unit="CNY/h",
+        #         **common_kwargs,
+        #     ),
+        # },
+        # {
+        #     "title": "Case 5：KTL coating 工艺 - 统一单位 (CNY/h)",
+        #     "kwargs": dict(
+        #         process_name="KTL coating",
+        #         unit="CNY/h",
+        #         **common_kwargs,
+        #     ),
+        # },
+        # {
+        #     "title": "Case 6：Machining OP30 工艺 - 统一单位 (CNY/h)",
+        #     "kwargs": dict(
+        #         process_name="Machining OP30",
+        #         unit="CNY/h",
+        #         **common_kwargs,
+        #     ),
+        # },
     ]
 
     # 逐个执行
