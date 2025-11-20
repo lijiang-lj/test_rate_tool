@@ -20,9 +20,9 @@
 
 ## 安装与环境配置
 1. 克隆仓库
-2. 激活已创建的 Conda 环境
+2. 创建并激活名为 process-rate-env 的 Conda 环境
 ```bash
-conda activate test1
+conda activate process-rate-env
 ```
 3. 创建并编辑 `.env`，参考：
 ```env
