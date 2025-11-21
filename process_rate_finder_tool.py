@@ -222,6 +222,12 @@ class ProcessRateFinderTool:
 
 - 工艺能耗数据：
 {consumption_data}
+-------------------------
+【语言要求】
+- 所有 reasoning 字段（包括 processing_speed.reasoning、base_hourly_cost.reasoning、
+  unit_conversion.reasoning、detailed_reasoning）必须全部使用中文撰写。
+- JSON 的字段名保持英文（如 processing_speed、final_cost），但所有描述性文字必须输出中文。
+-------------------------
 
 -------------------------
 【推理与单位转换要求】
